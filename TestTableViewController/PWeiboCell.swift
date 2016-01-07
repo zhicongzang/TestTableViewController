@@ -14,6 +14,8 @@ class PWeiboCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -101,22 +103,30 @@ class PWeiboCell: UITableViewCell {
             }else {
                 let saveName = imgUrl.md5
                 Alamofire.request(.GET, imgUrl).responseData({ (response) -> Void in
-                    if let img:NSData = response.result.value {
-                        let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg" //地址加密
-                        //加入字典
-                        delegate.appendPic_Cache(imgUrl, value: savePath)
+                    dispatch_async(dispatch_queue_create(saveName, nil), { () -> Void in
+                        if let img:NSData = response.result.value {
+                            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg" //地址加密
+                            //加入字典
+                            delegate.appendPic_Cache(imgUrl, value: savePath)
                             img.writeToFile(savePath, atomically: true)
                             if let image = UIImage(data: img) {
                                 if let imageScaled = UIImage(data: img, scale: image.size.height/150){
+                                    
+                                    UIGraphicsBeginImageContextWithOptions(imageScaled.size, true, 0)
+                                    
                                     if let saveData = UIImageJPEGRepresentation(imageScaled, 1.0){
                                         saveData.writeToFile(savePath, atomically: true)
                                     }
                                     imageLayer.frame  = CGRect(x: 66, y: 66 + textHeight + 8 , width: imageScaled.size.width, height: imageScaled.size.height)
-                                    imageLayer.contents = imageScaled.CGImage
-                                    self.layer.addSublayer(imageLayer)
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        imageLayer.contents = imageScaled.CGImage
+                                        self.layer.addSublayer(imageLayer)
+                                    })
                                 }
                             }
-                    }
+                        }
+                    })
+                    
                 })
             }
         }

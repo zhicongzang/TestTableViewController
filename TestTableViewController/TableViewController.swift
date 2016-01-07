@@ -138,10 +138,13 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     }
     
     func appendPic_Cache(key: String, value: String) {
-        pic_Cache[key] = value
-        let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/pic_Cache.plist"
-        let tmp = pic_Cache as NSDictionary
-        tmp.writeToFile(savePath, atomically: true)
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.pic_Cache[key] = value
+            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/pic_Cache.plist"
+            let tmp = self.pic_Cache as NSDictionary
+            tmp.writeToFile(savePath, atomically: true)
+        }
+        
     }
     
 
