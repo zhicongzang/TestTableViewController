@@ -43,6 +43,7 @@ class FPSLabel: UILabel{
             if enablePrint {
                 print("FPS: \(count)")
             }
+            self.textColor = UIColor(red: 235/255 , green: 123/255, blue: 6/255, alpha: 1)
             self.text = "FPS: \(count)"
             count = 0
         }

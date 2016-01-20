@@ -10,6 +10,9 @@ import UIKit
 import Alamofire
 
 class PWeiboCell: UITableViewCell {
+    
+    var userName:String?
+    var context:String?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,18 +27,30 @@ class PWeiboCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    deinit{
-        self.layer.sublayers = nil
-    }
     
-    func drawCell(data: WeiboData, pic_Cache:[String:String], delegate: pic_CacheDegelate) {
+    func drawCell(data: WeiboData, pic_Cache:[String:String], delegate: pic_CacheDegelate,saveImageQueue: dispatch_queue_t,img_Cache:[String:CGImage]) {
         clearSubLayers()
         let textHeight = data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
-        drawUserName(data.user.name)
-        drawUserPic(data.user.profileImgUrl, pic_Cache: pic_Cache, delegate: delegate)
-        drawText(data.text, textHeight: textHeight)
-        drawImage(data.smallPicUrl, pic_Cache: pic_Cache, delegate: delegate, textHeight: textHeight)
+        drawUserPic(data.user.profileImgUrl, pic_Cache: pic_Cache, delegate: delegate, saveImageQueue: saveImageQueue, img_Cache: img_Cache)
+       // drawImage(data.smallPicUrl, pic_Cache: pic_Cache, delegate: delegate, textHeight: textHeight, saveImageQueue: saveImageQueue)
     }
+    
+    
+    
+    override func drawRect(rect: CGRect) {
+        
+        let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
+            NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
+        if let userName = self.userName {
+            userName.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
+        }
+        if let context = self.context {
+            context.drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)), withAttributes: attributes)
+        }
+    }
+    
+    
+    
     
     func clearSubLayers(){
         if self.layer.sublayers?.count > 2 {
@@ -43,88 +58,46 @@ class PWeiboCell: UITableViewCell {
         }
     }
     
-    func drawUserName(user:String) {
-        let textLayer = CATextLayer()
-        //字体问题
-        textLayer.font = CTFontCreateWithName(UIFont.systemFontOfSize(17).fontName as CFStringRef, UIFont.systemFontOfSize(17).pointSize as CGFloat, nil)
-        textLayer.frame = CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25)
-        textLayer.fontSize = UIFont.systemFontOfSize(17).pointSize as CGFloat
-        textLayer.string = user
-        textLayer.wrapped = true
-        textLayer.foregroundColor = UIColor.blackColor().CGColor
-        textLayer.contentsScale = UIScreen.mainScreen().scale
-        self.layer.addSublayer(textLayer)
-    }
-    
-    func drawUserPic(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate) {
+    func drawUserPic(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate, saveImageQueue: dispatch_queue_t, img_Cache:[String:CGImage]) {
         let userImgLayer = CALayer()
         userImgLayer.contentsScale = UIScreen.mainScreen().scale
         userImgLayer.frame = CGRect(x: 8, y: 8, width: 50, height: 50)
         userImgLayer.cornerRadius = 25
         userImgLayer.masksToBounds = true
-        NetworkRequest.addImageLayerToView(userImgLayer, view: self, imgUrl: imgUrl, cache: pic_Cache, delegate: delegate)
+        NetworkRequest.addImageLayerToView(userImgLayer, view: self, imgUrl: imgUrl, cache: pic_Cache, delegate: delegate,saveImageQueue: saveImageQueue, img_Cache: img_Cache)
         
     }
     
-    func drawText(text:String, textHeight:CGFloat) {
-        
-        
-        let textLayer = CATextLayer()
-        //字体问题
-        
-        let font = UIFont(name: "HelveticaNeue-UltraLight", size: 17)!
-        
-        //textLayer.font = CGFontCreateWithFontName(UIFont.systemFontOfSize(17).fontName as CFStringRef)
-        textLayer.font = CGFontCreateWithFontName(font.fontName as CFStringRef)
-        textLayer.frame = CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: textHeight)
-        textLayer.alignmentMode = kCAAlignmentJustified
-        textLayer.fontSize = font.pointSize as CGFloat
-        
-        
-        textLayer.string = text
-        textLayer.wrapped = true
-        textLayer.foregroundColor = UIColor.blackColor().CGColor
-        textLayer.contentsScale = UIScreen.mainScreen().scale
-        
-        
-        
-        self.layer.addSublayer(textLayer)
-        
-    }
-    
-    func drawImage(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate, textHeight:CGFloat) {
+    func drawImage(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate, textHeight:CGFloat, saveImageQueue: dispatch_queue_t) {
         if imgUrl != "" {
             let imageLayer = CALayer()
             imageLayer.contentsScale = UIScreen.mainScreen().scale
             if let localPath = Cache.searchDataFromCache(imgUrl, cache: pic_Cache) where NSFileManager.defaultManager().fileExistsAtPath(localPath), let localPic = NSFileManager.defaultManager().contentsAtPath(localPath), let img = UIImage(data: localPic){
-                imageLayer.frame = CGRect(x: 66, y: 66 + textHeight + 8 , width: img.size.width, height: img.size.height)
+                imageLayer.frame = CGRect(x: 66, y: 66 + textHeight + 8 , width: 150 * img.size.width / img.size.height, height: 150)
                 imageLayer.contents = img.CGImage
                 self.layer.addSublayer(imageLayer)
+                print("Cache")
             }else {
                 let saveName = imgUrl.md5
                 Alamofire.request(.GET, imgUrl).responseData({ (response) -> Void in
-                    dispatch_async(dispatch_queue_create(saveName, nil), { () -> Void in
+                    dispatch_async(saveImageQueue, { () -> Void in
                         if let img:NSData = response.result.value {
                             let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg" //地址加密
                             //加入字典
                             delegate.appendPic_Cache(imgUrl, value: savePath)
                             img.writeToFile(savePath, atomically: true)
                             if let image = UIImage(data: img) {
-                                if let imageScaled = UIImage(data: img, scale: image.size.height/150){
-                                    
-                                    UIGraphicsBeginImageContextWithOptions(imageScaled.size, true, 0)
-                                    
-                                    if let saveData = UIImageJPEGRepresentation(imageScaled, 1.0){
+                                    if let saveData = UIImageJPEGRepresentation(image, 1.0){
                                         saveData.writeToFile(savePath, atomically: true)
                                     }
-                                    imageLayer.frame  = CGRect(x: 66, y: 66 + textHeight + 8 , width: imageScaled.size.width, height: imageScaled.size.height)
+                                    imageLayer.frame  = CGRect(x: 66, y: 66 + textHeight + 8 , width: 150 * image.size.width/image.size.height, height: 150)
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        imageLayer.contents = imageScaled.CGImage
+                                        imageLayer.contents = image.CGImage
                                         self.layer.addSublayer(imageLayer)
+                                        
                                     })
                                 }
                             }
-                        }
                     })
                     
                 })
@@ -132,7 +105,12 @@ class PWeiboCell: UITableViewCell {
         }
         
     }
-
     
+    
+    
+    
+    
+    
+
     
 }

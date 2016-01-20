@@ -14,7 +14,7 @@ class FPSNavigationController: UINavigationController {
         super.viewDidLoad()
         
         let fpsLabel = FPSLabel(x: 0, y: 20)
-        fpsLabel.enablePrint = true
+        fpsLabel.enablePrint = false
         self.view.addSubview(fpsLabel)
         // Do any additional setup after loading the view.
     }
