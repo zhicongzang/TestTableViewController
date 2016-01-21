@@ -106,8 +106,8 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         let cell = tableView.dequeueReusableCellWithIdentifier("P", forIndexPath: indexPath) as! PWeiboCell
         cell.context = data.text
         cell.userName = data.user.name
-        cell.drawCell(data, pic_Cache: pic_Cache, delegate: self, saveImageQueue: saveImageQueue,img_Cache: img_Cache)
-        
+   //     cell.drawCell(data, pic_Cache: pic_Cache, delegate: self, saveImageQueue: saveImageQueue,img_Cache: img_Cache)
+        cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
         
         
         return cell
@@ -168,7 +168,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         Alamofire.request(.GET, "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC").responseJSON { (response) -> Void in
             switch response.result{
             case .Success:
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                dispatch_async(self.needLoadQueue, { () -> Void in
                     if let value = response.result.value {
                         let json = JSON(value)
                         for(_,subJson):(String,JSON) in json["statuses"]{
@@ -179,6 +179,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
                         }
                     }
                 //    self.tableView.estimatedRowHeight = self.totalCellHeight / CGFloat(self.weibos.count)
+                    self.writePic_CacheToLocal()
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.tableView.reloadData()
                     })
@@ -208,21 +209,32 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         }
     }
     
-    
-    
-    func appendPic_Cache(key: String, value: String) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.pic_Cache[key] = value
+    func writePic_CacheToLocal() {
+        dispatch_async(needLoadQueue) { () -> Void in
             let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/pic_Cache.plist"
             let tmp = self.pic_Cache as NSDictionary
             tmp.writeToFile(savePath, atomically: true)
         }
-        
+    }
+    
+    
+    
+    func appendPic_Cache(key: String, value: String) {
+        self.pic_Cache[key] = value
     }
     
     func appendImg_Cache(key: String, value: CGImage) {
         self.img_Cache[key] = value
     }
+    
+    func getImageByKey(key: String) -> CGImage? {
+        return img_Cache[key]
+    }
+    
+    func getPathByKey(key: String) -> String? {
+        return pic_Cache[key]
+    }
+    
     
     
 

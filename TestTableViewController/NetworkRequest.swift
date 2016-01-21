@@ -12,8 +12,16 @@ import UIKit
 import SwiftyJSON
 
 protocol pic_CacheDegelate {
+    var pic_Cache: [String:String] {get set}
+    var img_Cache: [String:CGImage] {get set}
     func appendPic_Cache(key:String, value:String)
     func appendImg_Cache(key:String, value:CGImage)
+    func getPathByKey(key:String) -> String?
+    func getImageByKey(key:String) -> CGImage?
+}
+
+protocol PWeiboCellDelegate {
+    func drawImageToLayer(image:CGImage, layer:CALayer)
 }
 
 class NetworkRequest {
@@ -127,6 +135,44 @@ class NetworkRequest {
                     }
                 })
             })
+        }
+    }
+    
+    
+    class func downloadPicFromUrl(imgUrl: String, delegate: pic_CacheDegelate, cellDelegate: PWeiboCellDelegate, layer:CALayer, saveImageQueue: dispatch_queue_t) {
+        if imgUrl != "" {
+            Alamofire.request(.GET, imgUrl).responseData { (response) -> Void in
+                if let data = response.result.value {
+                    if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
+                        cellDelegate.drawImageToLayer(image, layer: layer)
+                        dispatch_async(saveImageQueue, { () -> Void in
+                            let saveName = imgUrl.md5
+                            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg"
+                            delegate.appendPic_Cache(imgUrl, value: savePath)
+                            data.writeToFile(savePath, atomically: true)
+                        })
+                        dispatch_async(saveImageQueue, { () -> Void in
+                            delegate.appendImg_Cache(imgUrl, value: image)
+                        
+                        })
+                    }
+                }
+            }
+        }
+    }
+    
+    class func loadPic(imgUrl: String, delegate: pic_CacheDegelate, cellDelegate: PWeiboCellDelegate, layer:CALayer, saveImageQueue: dispatch_queue_t){
+        if imgUrl != "" {
+            if let image = delegate.getImageByKey(imgUrl) {
+                cellDelegate.drawImageToLayer(image, layer: layer)
+            }else if let localPath = delegate.getPathByKey(imgUrl) where NSFileManager.defaultManager().fileExistsAtPath(localPath), let localPic = NSFileManager.defaultManager().contentsAtPath(localPath), let uiImg = UIImage(data: localPic), let image = uiImg.CGImage {
+                dispatch_async(saveImageQueue, { () -> Void in
+                    delegate.appendImg_Cache(imgUrl, value: image)
+                })
+                cellDelegate.drawImageToLayer(image, layer: layer)
+            }else {
+                downloadPicFromUrl(imgUrl, delegate: delegate, cellDelegate: cellDelegate, layer: layer, saveImageQueue: saveImageQueue)
+            }
         }
     }
     

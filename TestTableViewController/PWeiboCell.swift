@@ -9,7 +9,9 @@
 import UIKit
 import Alamofire
 
-class PWeiboCell: UITableViewCell {
+
+
+class PWeiboCell: UITableViewCell, PWeiboCellDelegate {
     
     var userName:String?
     var context:String?
@@ -28,13 +30,31 @@ class PWeiboCell: UITableViewCell {
     }
     
     
-    func drawCell(data: WeiboData, pic_Cache:[String:String], delegate: pic_CacheDegelate,saveImageQueue: dispatch_queue_t,img_Cache:[String:CGImage]) {
+ /*   func drawCell(data: WeiboData, pic_Cache:[String:String], delegate: pic_CacheDegelate,saveImageQueue: dispatch_queue_t,img_Cache:[String:CGImage]) {
         clearSubLayers()
         let textHeight = data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
         drawUserPic(data.user.profileImgUrl, pic_Cache: pic_Cache, delegate: delegate, saveImageQueue: saveImageQueue, img_Cache: img_Cache)
        // drawImage(data.smallPicUrl, pic_Cache: pic_Cache, delegate: delegate, textHeight: textHeight, saveImageQueue: saveImageQueue)
     }
+ */
     
+    func drawCell(data:WeiboData, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t) {
+        clearSubLayers()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+            let userImgLayer = CALayer()
+            userImgLayer.contentsScale = UIScreen.mainScreen().scale
+            userImgLayer.frame = CGRect(x: 8, y: 8, width: 50, height: 50)
+            userImgLayer.cornerRadius = 25
+            userImgLayer.masksToBounds = true
+            NetworkRequest.loadPic(data.user.profileImgUrl, delegate: delegate, cellDelegate: self, layer: userImgLayer, saveImageQueue: saveImageQueue)
+        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+            let imgLayer = CALayer()
+            imgLayer.contentsScale = UIScreen.mainScreen().scale
+            imgLayer.frame = CGRect(x: 66, y: 66 + data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 , width: 50, height: 50)
+            NetworkRequest.loadPic(data.smallPicUrl, delegate: delegate, cellDelegate: self, layer: imgLayer, saveImageQueue: saveImageQueue)
+        }
+    }
     
     
     override func drawRect(rect: CGRect) {
@@ -58,13 +78,21 @@ class PWeiboCell: UITableViewCell {
         }
     }
     
-    func drawUserPic(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate, saveImageQueue: dispatch_queue_t, img_Cache:[String:CGImage]) {
+    
+    
+    
+    
+    
+    
+   /* func drawUserPic(imgUrl:String, pic_Cache:[String:String], delegate:pic_CacheDegelate, saveImageQueue: dispatch_queue_t, img_Cache:[String:CGImage]) {
         let userImgLayer = CALayer()
         userImgLayer.contentsScale = UIScreen.mainScreen().scale
         userImgLayer.frame = CGRect(x: 8, y: 8, width: 50, height: 50)
         userImgLayer.cornerRadius = 25
         userImgLayer.masksToBounds = true
-        NetworkRequest.addImageLayerToView(userImgLayer, view: self, imgUrl: imgUrl, cache: pic_Cache, delegate: delegate,saveImageQueue: saveImageQueue, img_Cache: img_Cache)
+        //NetworkRequest.addImageLayerToView(userImgLayer, view: self, imgUrl: imgUrl, cache: pic_Cache, delegate: delegate,saveImageQueue: saveImageQueue, img_Cache: img_Cache)
+     //   userImgLayer.contents = NetworkRequest.loadPic(imgUrl, delegate: delegate, saveImageQueue: saveImageQueue)
+        self.layer.addSublayer(userImgLayer)
         
     }
     
@@ -104,6 +132,17 @@ class PWeiboCell: UITableViewCell {
             }
         }
         
+    }
+    
+*/
+    func drawImageToLayer(image: CGImage, layer: CALayer) {
+        if CGImageGetWidth(image) != 50 || CGImageGetHeight(image) != 50 {
+            layer.frame.size = CGSizeMake(150 * CGFloat(CGImageGetWidth(image)) / CGFloat(CGImageGetHeight(image)), 150)
+        }
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            layer.contents = image
+            self.layer.addSublayer(layer)
+        }
     }
     
     
