@@ -17,6 +17,7 @@ class PWeiboCell: UITableViewCell {
     var context: String?
     var delegate: pic_CacheDegelate?
     var userPicUrl: String?
+    var smallPicUrl: String?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -70,9 +71,8 @@ class PWeiboCell: UITableViewCell {
         }
         let context = UIGraphicsGetCurrentContext();
         CGContextScaleCTM(context, 1, -1);
-        CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), delegate!.img_Cache[userPicUrl!])
-        
-   //     CGContextDrawImage(context, CGRect(x: 66, y: -(66 + self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(image)) / CGFloat(CGImageGetHeight(image)), height: -150), image)
+        CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), delegate!.getImageByKey(userPicUrl!))
+        CGContextDrawImage(context, CGRect(x: 66, y: -(66 + self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(delegate!.getImageByKey(smallPicUrl!))) / CGFloat(CGImageGetHeight(delegate!.getImageByKey(smallPicUrl!))), height: -150), delegate!.getImageByKey(smallPicUrl!))
         
         
     }

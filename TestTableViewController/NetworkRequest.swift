@@ -66,4 +66,24 @@ class NetworkRequest {
         
     }
     
+    class func downloadPicFromUrl(imgUrl: String, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t) {
+        if let url = NSURL(string: imgUrl) {
+            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+            let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
+                if let data = d {
+                    if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
+                        delegate.appendImg_Cache(imgUrl, value: image)
+                        dispatch_async(saveImageQueue, { () -> Void in
+                            let saveName = imgUrl.md5
+                            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg"
+                            delegate.appendPic_Cache(imgUrl, value: savePath)
+                            data.writeToFile(savePath, atomically: true)
+                        })
+                    }
+                }
+            })
+            task.resume()
+        }
+    }
+    
 }

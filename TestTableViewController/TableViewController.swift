@@ -108,6 +108,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         cell.userName = data.user.name
         cell.delegate = self
         cell.userPicUrl = data.user.profileImgUrl
+        cell.smallPicUrl = data.smallPicUrl
         //cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
         
         
@@ -177,14 +178,8 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
                             let weibo = WeiboData(data: subJson)
                             self.weibos.append(weibo)
                             self.calculateCellHeight(weibo)
-                            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-                            let task = session.dataTaskWithURL(NSURL(string: weibo.user.profileImgUrl)!, completionHandler: { (data, _, _) -> Void in
-                                if let uiImg = UIImage(data: data!), let image = uiImg.CGImage {
-                                    self.img_Cache[weibo.user.profileImgUrl] = image
-                                }
-                            })
-                            task.resume()
-                            
+                            NetworkRequest.downloadPicFromUrl(weibo.user.profileImgUrl, delegate: self, saveImageQueue: self.saveImageQueue)
+                            NetworkRequest.downloadPicFromUrl(weibo.smallPicUrl, delegate: self, saveImageQueue: self.saveImageQueue)
                         }
                     }
                     self.writePic_CacheToLocal()
