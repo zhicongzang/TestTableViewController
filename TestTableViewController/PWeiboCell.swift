@@ -68,13 +68,6 @@ class PWeiboCell: UITableViewCell {
         if let context = self.context {
             context.drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)), withAttributes: attributes)
         }
-        let context = UIGraphicsGetCurrentContext();
-        CGContextScaleCTM(context, 1, -1);
-        CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), delegate!.img_Cache[userPicUrl!])
-        
-   //     CGContextDrawImage(context, CGRect(x: 66, y: -(66 + self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(image)) / CGFloat(CGImageGetHeight(image)), height: -150), image)
-        
-        
     }
     
 

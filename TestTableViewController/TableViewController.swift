@@ -100,15 +100,11 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         if needLoadArr.count > 0 && needLoadArr.indexOf(indexPath) == nil{
             return self.cell
         }
-       // let cell = tableView.dequeueReusableCellWithIdentifier("Weibo", forIndexPath: indexPath) as! WeiboCell
-       // cell.setWeiboData(weibos[indexPath.row], pic_Cache: pic_Cache, delegate: self)
         
         let cell = tableView.dequeueReusableCellWithIdentifier("P", forIndexPath: indexPath) as! PWeiboCell
         cell.context = data.text
         cell.userName = data.user.name
-        cell.delegate = self
-        cell.userPicUrl = data.user.profileImgUrl
-        //cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
+        cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
         
         
         return cell
@@ -177,13 +173,6 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
                             let weibo = WeiboData(data: subJson)
                             self.weibos.append(weibo)
                             self.calculateCellHeight(weibo)
-                            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-                            let task = session.dataTaskWithURL(NSURL(string: weibo.user.profileImgUrl)!, completionHandler: { (data, _, _) -> Void in
-                                if let uiImg = UIImage(data: data!), let image = uiImg.CGImage {
-                                    self.img_Cache[weibo.user.profileImgUrl] = image
-                                }
-                            })
-                            task.resume()
                             
                         }
                     }
