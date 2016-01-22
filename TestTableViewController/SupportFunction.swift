@@ -33,4 +33,8 @@ class SupportFunction {
         return [:]
     }
     
+    class func cellHeightByData(data:WeiboData) -> CGFloat{
+        return 8 + 50 + 8 + data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() - 55 * 2) + 8 + 28 + 20
+    }
+    
 }

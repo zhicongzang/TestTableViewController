@@ -18,7 +18,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     var weibos: [WeiboData] = []
     
     var cellHeightCache:[Int:CGFloat] = [:]
-    var token = ""
+    //var token = ""
     
     var needLoadArr = [NSIndexPath]()
     
@@ -26,7 +26,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     
     let cellHeightQueue = dispatch_queue_create("cellHeight", DISPATCH_QUEUE_CONCURRENT)
     let saveImageQueue = dispatch_queue_create("saveImage", DISPATCH_QUEUE_CONCURRENT)
-    let needLoadQueue = dispatch_queue_create("needLoad", DISPATCH_QUEUE_CONCURRENT)
+    let writeToLocalQueue = dispatch_queue_create("writeToLocal", DISPATCH_QUEUE_SERIAL)
     
     var totalCellHeight:CGFloat = 0
     
@@ -106,8 +106,9 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         let cell = tableView.dequeueReusableCellWithIdentifier("P", forIndexPath: indexPath) as! PWeiboCell
         cell.context = data.text
         cell.userName = data.user.name
-   //     cell.drawCell(data, pic_Cache: pic_Cache, delegate: self, saveImageQueue: saveImageQueue,img_Cache: img_Cache)
-        cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
+        cell.delegate = self
+        cell.userPicUrl = data.user.profileImgUrl
+        //cell.drawCell(data, delegate: self, saveImageQueue: saveImageQueue)
         
         
         return cell
@@ -122,11 +123,11 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
             return height
         }else {
             if data.smallPicUrl != "" {
-                let height = WeiboCell.cellHeightByData(data) + 150 + 8
+                let height = SupportFunction.cellHeightByData(data) + 150 + 8
                 cellHeightCache[data.id] = height
                 return height
             }else {
-                let height = WeiboCell.cellHeightByData(data)
+                let height = SupportFunction.cellHeightByData(data)
                 cellHeightCache[data.id] = height
                 return height
             }
@@ -146,6 +147,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
                     self.needLoadArr.removeAll()
                     let temp = self.tableView.indexPathsForRowsInRect(CGRectMake(0, targetContentOffset.memory.y, self.tableView.frame.width, self.tableView.frame.height))!
                     let indexPath = temp.last
+                    self.needLoadArr.append(NSIndexPath(forRow: (indexPath?.row)! - 4, inSection: 0))
                     self.needLoadArr.append(NSIndexPath(forRow: (indexPath?.row)! - 3, inSection: 0))
                     self.needLoadArr.append(NSIndexPath(forRow: (indexPath?.row)! - 2, inSection: 0))
                     self.needLoadArr.append(NSIndexPath(forRow: (indexPath?.row)! - 1, inSection: 0))
@@ -168,17 +170,23 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         Alamofire.request(.GET, "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC").responseJSON { (response) -> Void in
             switch response.result{
             case .Success:
-                dispatch_async(self.needLoadQueue, { () -> Void in
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
                     if let value = response.result.value {
                         let json = JSON(value)
                         for(_,subJson):(String,JSON) in json["statuses"]{
                             let weibo = WeiboData(data: subJson)
                             self.weibos.append(weibo)
                             self.calculateCellHeight(weibo)
-                            //  NetworkRequest.downloadPicFromWeiboData(weibo, cache: self.pic_Cache, delegate: self, saveImageQueue: self.saveImageQueue)
+                            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+                            let task = session.dataTaskWithURL(NSURL(string: weibo.user.profileImgUrl)!, completionHandler: { (data, _, _) -> Void in
+                                if let uiImg = UIImage(data: data!), let image = uiImg.CGImage {
+                                    self.img_Cache[weibo.user.profileImgUrl] = image
+                                }
+                            })
+                            task.resume()
+                            
                         }
                     }
-                //    self.tableView.estimatedRowHeight = self.totalCellHeight / CGFloat(self.weibos.count)
                     self.writePic_CacheToLocal()
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.tableView.reloadData()
@@ -197,11 +205,11 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         dispatch_async(cellHeightQueue) { () -> Void in
             if self.cellHeightCache[data.id] == nil {
                 if data.smallPicUrl != "" {
-                    let height = WeiboCell.cellHeightByData(data) + 150 + 8
+                    let height = SupportFunction.cellHeightByData(data) + 150 + 8
                     self.cellHeightCache[data.id] = height
                     self.totalCellHeight = self.totalCellHeight + height
                 }else {
-                    let height = WeiboCell.cellHeightByData(data)
+                    let height = SupportFunction.cellHeightByData(data)
                     self.cellHeightCache[data.id] = height
                     self.totalCellHeight = self.totalCellHeight + height
                 }
@@ -210,13 +218,12 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     }
     
     func writePic_CacheToLocal() {
-        dispatch_async(needLoadQueue) { () -> Void in
+        dispatch_async(writeToLocalQueue) { () -> Void in
             let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/pic_Cache.plist"
             let tmp = self.pic_Cache as NSDictionary
             tmp.writeToFile(savePath, atomically: true)
         }
     }
-    
     
     
     func appendPic_Cache(key: String, value: String) {

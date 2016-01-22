@@ -13,7 +13,6 @@ extension String {
     
     //字体需要修改
     func stringHeightWith(fontSize:CGFloat,width:CGFloat)->CGFloat {
-        //let font = UIFont.systemFontOfSize(fontSize)
         let font = UIFont(name: "HelveticaNeue-UltraLight", size: 17)!
         let size = CGSizeMake(width,CGFloat.max)
         let paragraphStyle = NSMutableParagraphStyle()

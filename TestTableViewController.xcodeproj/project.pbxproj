@@ -41,8 +41,6 @@
 		DCAB457F1C1A226F00CF68E0 /* TestTableViewControllerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB457E1C1A226F00CF68E0 /* TestTableViewControllerUITests.swift */; };
 		DCAB458D1C1A228F00CF68E0 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB458C1C1A228F00CF68E0 /* TableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB458F1C1A251C00CF68E0 /* WeiboData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB458E1C1A251C00CF68E0 /* WeiboData.swift */; settings = {ASSET_TAGS = (); }; };
-		DCAB45A01C1A511600CF68E0 /* WeiboCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB459E1C1A511600CF68E0 /* WeiboCell.swift */; settings = {ASSET_TAGS = (); }; };
-		DCAB45A11C1A511600CF68E0 /* WeiboCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCAB459F1C1A511600CF68E0 /* WeiboCell.xib */; settings = {ASSET_TAGS = (); }; };
 		DCAB45A31C1B6F6A00CF68E0 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45A21C1B6F6A00CF68E0 /* Extension.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45A91C1B7BBC00CF68E0 /* NetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45A81C1B7BBC00CF68E0 /* NetworkRequest.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45B51C1F710800CF68E0 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45B41C1F710800CF68E0 /* Cache.swift */; settings = {ASSET_TAGS = (); }; };
@@ -133,8 +131,6 @@
 		DCAB45801C1A226F00CF68E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCAB458C1C1A228F00CF68E0 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		DCAB458E1C1A251C00CF68E0 /* WeiboData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboData.swift; sourceTree = "<group>"; };
-		DCAB459E1C1A511600CF68E0 /* WeiboCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboCell.swift; sourceTree = "<group>"; };
-		DCAB459F1C1A511600CF68E0 /* WeiboCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WeiboCell.xib; sourceTree = "<group>"; };
 		DCAB45A21C1B6F6A00CF68E0 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		DCAB45A81C1B7BBC00CF68E0 /* NetworkRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkRequest.swift; sourceTree = "<group>"; };
 		DCAB45B41C1F710800CF68E0 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
@@ -362,8 +358,6 @@
 		DCAB45B11C1F6FBB00CF68E0 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				DCAB459E1C1A511600CF68E0 /* WeiboCell.swift */,
-				DCAB459F1C1A511600CF68E0 /* WeiboCell.xib */,
 				DCAB45B91C22168500CF68E0 /* PWeiboCell.swift */,
 				DCAB45BA1C22168500CF68E0 /* PWeiboCell.xib */,
 			);
@@ -490,7 +484,6 @@
 				DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */,
 				DCAB45691C1A226F00CF68E0 /* LaunchScreen.storyboard in Resources */,
 				DC3946121C3C3D7200AF0450 /* WeiboDialogClose.png in Resources */,
-				DCAB45A11C1A511600CF68E0 /* WeiboCell.xib in Resources */,
 				DCAB45661C1A226F00CF68E0 /* Assets.xcassets in Resources */,
 				DCAB45BC1C22168500CF68E0 /* PWeiboCell.xib in Resources */,
 				DCAB45641C1A226F00CF68E0 /* Main.storyboard in Resources */,
@@ -569,7 +562,6 @@
 				DC3946161C3C3D7200AF0450 /* PathHelper.m in Sources */,
 				DC3946171C3C3D7200AF0450 /* Resources.m in Sources */,
 				DCAB45A91C1B7BBC00CF68E0 /* NetworkRequest.swift in Sources */,
-				DCAB45A01C1A511600CF68E0 /* WeiboCell.swift in Sources */,
 				DC39460F1C3C3D7200AF0450 /* User.m in Sources */,
 				DC39460A1C3C3D7200AF0450 /* WeiboSignIn.m in Sources */,
 				DC3946101C3C3D7200AF0450 /* WeiboAccount.m in Sources */,
