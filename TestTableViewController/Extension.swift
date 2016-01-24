@@ -9,10 +9,16 @@
 import Foundation
 import UIKit
 
+enum StringSearchingOptions: String {
+    case WeiboURL = "https?://t.cn/[a-z0-9]{7}"
+    case WeiboUserName = "@[\\-_\\.a-z0-9\\u4e00-\\u9fa5]{1,50} "
+    case WeiboHot = "#[\\-_\\.a-z0-9\\u4e00-\\u9fa5]{1,50}#"
+}
+
 extension String {
     
     //字体需要修改
-    func stringHeightWith(fontSize:CGFloat,width:CGFloat)->CGFloat {
+    func stringHeightWith(fontSize:CGFloat,width:CGFloat) -> CGFloat {
         let font = UIFont(name: "HelveticaNeue-UltraLight", size: 17)!
         let size = CGSizeMake(width,CGFloat.max)
         let paragraphStyle = NSMutableParagraphStyle()
@@ -40,6 +46,23 @@ extension String {
         result.destroy()
         return hash as String
         
+    }
+    
+    func heightLightString(options: [StringSearchingOptions]) -> NSAttributedString {
+        let attrSting = NSMutableAttributedString(string: self)
+        attrSting.addAttribute(NSFontAttributeName, value: UIFont(name: "HelveticaNeue-UltraLight", size: 17)!, range: NSMakeRange(0,self.characters.count))
+        for option in options {
+            if let regex = try? NSRegularExpression(pattern: option.rawValue, options: NSRegularExpressionOptions.CaseInsensitive) {
+                let matches = regex.matchesInString(self, options: NSMatchingOptions(rawValue: 0), range: NSMakeRange(0,self.characters.count))
+                for match in matches {
+                    
+                    attrSting.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range: match.range)
+                }
+            }
+        }
+        
+        
+        return attrSting
     }
 }
 

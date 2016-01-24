@@ -18,23 +18,33 @@ class PWeiboCell: UITableViewCell {
     var delegate: pic_CacheDegelate?
     var userPicUrl: String?
     var smallPicUrl: String?
+    
+    
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
         
+        self.selectedBackgroundView = UIView(frame: self.frame)
+        self.selectedBackgroundView?.backgroundColor = UIColor(white: 0.66, alpha: 0.1)
+        self.multipleTouchEnabled = true
         
     }
+    
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        
+        
+        // Configure the view for the selercted state
 
-        // Configure the view for the selected state
+        
     }
     
     
-    func drawCell(data:WeiboData, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t) {
+  /*  func drawCell(data:WeiboData, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t) {
         clearSubLayers()
         NetworkRequest.loadPic(data.user.profileImgUrl, delegate: delegate, saveImageQueue: saveImageQueue, completed: { (image) -> Void in
             let layer = CALayer()
@@ -58,8 +68,10 @@ class PWeiboCell: UITableViewCell {
         }
     }
     
- 
+ */
+    
     override func drawRect(rect: CGRect) {
+        
         
         let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
             NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
@@ -67,7 +79,8 @@ class PWeiboCell: UITableViewCell {
             userName.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
         }
         if let context = self.context {
-            context.drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)), withAttributes: attributes)
+            //context.drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)), withAttributes: attributes)
+            context.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)))
         }
         let context = UIGraphicsGetCurrentContext();
         CGContextScaleCTM(context, 1, -1);

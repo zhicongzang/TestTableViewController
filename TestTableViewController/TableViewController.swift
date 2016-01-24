@@ -44,7 +44,6 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
             }
         }*/
         
-        loadData()
         
         super.viewDidLoad()
         
@@ -56,6 +55,9 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         
         let textCellNib = UINib(nibName: "PWeiboCell", bundle: nil)
         self.tableView.registerNib(textCellNib, forCellReuseIdentifier: "P")
+        
+        loadData()
+        
         
     
         
