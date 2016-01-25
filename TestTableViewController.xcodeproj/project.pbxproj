@@ -33,6 +33,7 @@
 		DC39461B1C3C3D7200AF0450 /* WeiboLoginDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3946021C3C3D7200AF0450 /* WeiboLoginDialog.m */; settings = {ASSET_TAGS = (); }; };
 		DC39461C1C3C3D7200AF0450 /* Weibo.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3946041C3C3D7200AF0450 /* Weibo.m */; settings = {ASSET_TAGS = (); }; };
 		DC9331241C3DC9E700BCFB3C /* FPSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9331231C3DC9E700BCFB3C /* FPSNavigationController.swift */; settings = {ASSET_TAGS = (); }; };
+		DC9331281C56B24A00BCFB3C /* 2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DC9331271C56B24A00BCFB3C /* 2.jpg */; settings = {ASSET_TAGS = (); }; };
 		DCAB455F1C1A226F00CF68E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB455E1C1A226F00CF68E0 /* AppDelegate.swift */; };
 		DCAB45641C1A226F00CF68E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45621C1A226F00CF68E0 /* Main.storyboard */; };
 		DCAB45661C1A226F00CF68E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45651C1A226F00CF68E0 /* Assets.xcassets */; };
@@ -43,7 +44,6 @@
 		DCAB458F1C1A251C00CF68E0 /* WeiboData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB458E1C1A251C00CF68E0 /* WeiboData.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45A31C1B6F6A00CF68E0 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45A21C1B6F6A00CF68E0 /* Extension.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45A91C1B7BBC00CF68E0 /* NetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45A81C1B7BBC00CF68E0 /* NetworkRequest.swift */; settings = {ASSET_TAGS = (); }; };
-		DCAB45B51C1F710800CF68E0 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45B41C1F710800CF68E0 /* Cache.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45BB1C22168500CF68E0 /* PWeiboCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45B91C22168500CF68E0 /* PWeiboCell.swift */; settings = {ASSET_TAGS = (); }; };
 		DCAB45BC1C22168500CF68E0 /* PWeiboCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45BA1C22168500CF68E0 /* PWeiboCell.xib */; settings = {ASSET_TAGS = (); }; };
 		DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45F71C22261700CF68E0 /* 1.jpg */; settings = {ASSET_TAGS = (); }; };
@@ -117,6 +117,7 @@
 		DC3946051C3C3D7200AF0450 /* WeiboConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboConfig.h; sourceTree = "<group>"; };
 		DC3946061C3C3D7200AF0450 /* WeiboSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboSDK.h; sourceTree = "<group>"; };
 		DC9331231C3DC9E700BCFB3C /* FPSNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FPSNavigationController.swift; sourceTree = "<group>"; };
+		DC9331271C56B24A00BCFB3C /* 2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpg; sourceTree = "<group>"; };
 		DCAB455B1C1A226F00CF68E0 /* TestTableViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestTableViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCAB455E1C1A226F00CF68E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DCAB45631C1A226F00CF68E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -133,7 +134,6 @@
 		DCAB458E1C1A251C00CF68E0 /* WeiboData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboData.swift; sourceTree = "<group>"; };
 		DCAB45A21C1B6F6A00CF68E0 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		DCAB45A81C1B7BBC00CF68E0 /* NetworkRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkRequest.swift; sourceTree = "<group>"; };
-		DCAB45B41C1F710800CF68E0 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		DCAB45B61C21FFC700CF68E0 /* TestTableViewController-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestTableViewController-Bridging-Header.h"; sourceTree = "<group>"; };
 		DCAB45B91C22168500CF68E0 /* PWeiboCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PWeiboCell.swift; sourceTree = "<group>"; };
 		DCAB45BA1C22168500CF68E0 /* PWeiboCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PWeiboCell.xib; sourceTree = "<group>"; };
@@ -272,6 +272,7 @@
 			children = (
 				DC3945D51C3C3D7200AF0450 /* WeiboSDK */,
 				DCAB45F71C22261700CF68E0 /* 1.jpg */,
+				DC9331271C56B24A00BCFB3C /* 2.jpg */,
 				DCAB455D1C1A226F00CF68E0 /* TestTableViewController */,
 				DCAB45721C1A226F00CF68E0 /* TestTableViewControllerTests */,
 				DCAB457D1C1A226F00CF68E0 /* TestTableViewControllerUITests */,
@@ -349,7 +350,6 @@
 				DCAB45A21C1B6F6A00CF68E0 /* Extension.swift */,
 				DCAB45A81C1B7BBC00CF68E0 /* NetworkRequest.swift */,
 				327C98B21C1CE20F0052C809 /* SupportFunction.swift */,
-				DCAB45B41C1F710800CF68E0 /* Cache.swift */,
 				DC00F9031C3DC21E00B7BAF1 /* FPSLabel.swift */,
 			);
 			name = Support;
@@ -484,6 +484,7 @@
 				DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */,
 				DCAB45691C1A226F00CF68E0 /* LaunchScreen.storyboard in Resources */,
 				DC3946121C3C3D7200AF0450 /* WeiboDialogClose.png in Resources */,
+				DC9331281C56B24A00BCFB3C /* 2.jpg in Resources */,
 				DCAB45661C1A226F00CF68E0 /* Assets.xcassets in Resources */,
 				DCAB45BC1C22168500CF68E0 /* PWeiboCell.xib in Resources */,
 				DCAB45641C1A226F00CF68E0 /* Main.storyboard in Resources */,
@@ -569,7 +570,6 @@
 				DC39461B1C3C3D7200AF0450 /* WeiboLoginDialog.m in Sources */,
 				DC39461A1C3C3D7200AF0450 /* WeiboDialog.m in Sources */,
 				DC9331241C3DC9E700BCFB3C /* FPSNavigationController.swift in Sources */,
-				DCAB45B51C1F710800CF68E0 /* Cache.swift in Sources */,
 				DC3946141C3C3D7200AF0450 /* ImageResourceLoader.m in Sources */,
 				327C98B31C1CE20F0052C809 /* SupportFunction.swift in Sources */,
 				DC3946071C3C3D7200AF0450 /* WeiboAccounts.m in Sources */,

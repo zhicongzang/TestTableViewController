@@ -17,7 +17,6 @@ enum StringSearchingOptions: String {
 
 extension String {
     
-    //字体需要修改
     func stringHeightWith(fontSize:CGFloat,width:CGFloat) -> CGFloat {
         let font = UIFont(name: "HelveticaNeue-UltraLight", size: 17)!
         let size = CGSizeMake(width,CGFloat.max)
@@ -81,4 +80,29 @@ extension UIView {
         rect.size.width = width
         self.frame = rect
     }
+    
+    
+}
+
+
+extension UIImage {
+    func circleImage() -> UIImage{
+        UIGraphicsBeginImageContext(self.size)
+        let context = UIGraphicsGetCurrentContext()
+        CGContextSetLineWidth(context, 2)
+        CGContextSetStrokeColorWithColor(context, UIColor(white: 0.66, alpha: 0.1).CGColor)
+        let rect = CGRectMake(0, 0, self.size.width, self.size.height)
+        CGContextAddEllipseInRect(context, rect)
+        CGContextClip(context)
+        
+        self.drawInRect(rect)
+        CGContextAddEllipseInRect(context, rect)
+        CGContextStrokePath(context)
+        let new = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return new
+
+    }
+
+    
 }

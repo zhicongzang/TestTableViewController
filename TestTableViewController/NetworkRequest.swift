@@ -7,79 +7,81 @@
 //
 
 import Foundation
-import Alamofire
 import UIKit
 import SwiftyJSON
 
 protocol pic_CacheDegelate {
-    var pic_Cache: [String:String] {get set}
-    var img_Cache: [String:CGImage] {get set}
     func appendPic_Cache(key:String, value:String)
-    func appendImg_Cache(key:String, value:CGImage)
+    func appendImg_Cache(key:String, value:CGImage, checkData:WeiboData)
     func getPathByKey(key:String) -> String?
     func getImageByKey(key:String) -> CGImage?
+    func getCellHeightByID(id: Int) -> CGFloat?
+    func getFullImageByKey(key: Int) -> CGImage?
 }
 
 
 class NetworkRequest {
     
     
-    class func downloadPicFromUrl(imgUrl: String, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t, completed:(CGImage) -> Void) {
-        if imgUrl != "" {
-            Alamofire.request(.GET, imgUrl).responseData { (response) -> Void in
-                if let data = response.result.value {
-                    if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
-                            completed(image)
-                        })
-                        dispatch_async(saveImageQueue, { () -> Void in
-                            let saveName = imgUrl.md5
-                            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg"
-                            delegate.appendPic_Cache(imgUrl, value: savePath)
-                            data.writeToFile(savePath, atomically: true)
-                        })
-                        dispatch_async(saveImageQueue, { () -> Void in
-                            delegate.appendImg_Cache(imgUrl, value: image)
-                        
-                        })
+    class func downloadPicsFromUrl(weiboData:WeiboData, delegate: pic_CacheDegelate) {
+        let userPicUrlString = weiboData.user.profileImgUrl
+        let picUrlString = weiboData.smallPicUrl
+        if let url = NSURL(string: userPicUrlString) {
+            dispatch_async(downloadPicQueue) { () -> Void in
+                let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+                let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
+                    if let data = d {
+                        if let uiImg = UIImage(data: data), let image = uiImg.circleImage().CGImage {
+                            delegate.appendImg_Cache(userPicUrlString, value: image, checkData: weiboData)
+                            dispatch_async(saveImageQueue, { () -> Void in
+                                let saveName = userPicUrlString.md5
+                                let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                delegate.appendPic_Cache(userPicUrlString, value: savePath)
+                                data.writeToFile(savePath, atomically: true)
+                            })
+                        }
                     }
-                }
+                })
+                task.resume()
             }
+        }
+        if let url = NSURL(string: picUrlString) {
+            dispatch_async(downloadPicQueue) { () -> Void in
+                let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+                let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
+                    if let data = d {
+                        if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
+                            delegate.appendImg_Cache(picUrlString, value: image, checkData: weiboData)
+                            dispatch_async(saveImageQueue, { () -> Void in
+                                let saveName = picUrlString.md5
+                                let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                delegate.appendPic_Cache(picUrlString, value: savePath)
+                                data.writeToFile(savePath, atomically: true)
+                            })
+                        }
+                    }
+                })
+                task.resume()
+            }
+            
         }
     }
     
-    class func loadPic(imgUrl: String, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t, completed:(CGImage) -> Void) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
-            if imgUrl != "" {
-                if let image = delegate.getImageByKey(imgUrl) {
-                    completed(image)
-                }else if let localPath = delegate.getPathByKey(imgUrl) where NSFileManager.defaultManager().fileExistsAtPath(localPath), let localPic = NSFileManager.defaultManager().contentsAtPath(localPath), let uiImg = UIImage(data: localPic), let image = uiImg.CGImage {
-                    dispatch_async(saveImageQueue, { () -> Void in
-                        delegate.appendImg_Cache(imgUrl, value: image)
-                    })
-                    completed(image)
-                }else {
-                    downloadPicFromUrl(imgUrl, delegate: delegate, saveImageQueue: saveImageQueue, completed: completed)
-                }
-            }
-        })
-        
-    }
-    
-    class func downloadPicFromUrl(imgUrl: String, delegate: pic_CacheDegelate, saveImageQueue: dispatch_queue_t) {
-        if let url = NSURL(string: imgUrl) {
+    class func getWeiboDataFromUrl(stringUrl: String, completed:(JSON) -> Void) {
+        if let url = NSURL(string: stringUrl) {
             let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
             let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
                 if let data = d {
-                    if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
-                        delegate.appendImg_Cache(imgUrl, value: image)
-                        dispatch_async(saveImageQueue, { () -> Void in
-                            let saveName = imgUrl.md5
-                            let savePath = NSHomeDirectory() + "/Documents/Pic_Cache/\(saveName).jpg"
-                            delegate.appendPic_Cache(imgUrl, value: savePath)
-                            data.writeToFile(savePath, atomically: true)
-                        })
+                    do {
+                        if let j = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
+                            let json = JSON(j)
+                            completed(json)
+                        }
+                        
+                    }catch _ {
+                        print("asdad")
                     }
+                    
                 }
             })
             task.resume()
