@@ -26,45 +26,58 @@ class NetworkRequest {
     class func downloadPicsFromUrl(weiboData:WeiboData, delegate: pic_CacheDegelate) {
         let userPicUrlString = weiboData.user.profileImgUrl
         let picUrlString = weiboData.smallPicUrl
-        if let url = NSURL(string: userPicUrlString) {
-            dispatch_async(downloadPicQueue) { () -> Void in
-                let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-                let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
-                    if let data = d {
-                        if let uiImg = UIImage(data: data), let image = uiImg.circleImage().CGImage {
-                            delegate.appendImg_Cache(userPicUrlString, value: image, checkData: weiboData)
-                            dispatch_async(saveImageQueue, { () -> Void in
-                                let saveName = userPicUrlString.md5
-                                let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
-                                delegate.appendPic_Cache(userPicUrlString, value: savePath)
-                                data.writeToFile(savePath, atomically: true)
-                            })
+        dispatch_async(downloadPicQueue) { () -> Void in
+            if let path = delegate.getPathByKey(userPicUrlString), let uiImg = UIImage(contentsOfFile: path), let image = uiImg.CGImage{
+                delegate.appendImg_Cache(userPicUrlString, value: image, checkData: weiboData)
+            }else {
+                if let url = NSURL(string: userPicUrlString) {
+                    let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+                    let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
+                        if let data = d {
+                            if let uiImg = UIImage(data: data), let image = uiImg.circleImage().CGImage {
+                                delegate.appendImg_Cache(userPicUrlString, value: image, checkData: weiboData)
+                                dispatch_async(saveImageQueue, { () -> Void in
+                                    let saveName = userPicUrlString.md5
+                                    let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                    delegate.appendPic_Cache(userPicUrlString, value: savePath)
+                                    data.writeToFile(savePath, atomically: true)
+                                })
+                            }
                         }
-                    }
-                })
-                task.resume()
+                    })
+                    task.resume()
+                }
             }
         }
-        if let url = NSURL(string: picUrlString) {
+        
+        if picUrlString != "" {
             dispatch_async(downloadPicQueue) { () -> Void in
-                let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-                let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
-                    if let data = d {
-                        if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
-                            delegate.appendImg_Cache(picUrlString, value: image, checkData: weiboData)
-                            dispatch_async(saveImageQueue, { () -> Void in
-                                let saveName = picUrlString.md5
-                                let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
-                                delegate.appendPic_Cache(picUrlString, value: savePath)
-                                data.writeToFile(savePath, atomically: true)
-                            })
-                        }
+                if let path = delegate.getPathByKey(picUrlString), let uiImg = UIImage(contentsOfFile: path), let image = uiImg.CGImage{
+                    delegate.appendImg_Cache(picUrlString, value: image, checkData: weiboData)
+                }else {
+                    if let url = NSURL(string: picUrlString) {
+                        let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+                        let task = session.dataTaskWithURL(url, completionHandler: { (d, _, error) -> Void in
+                            if let data = d {
+                                if let uiImg = UIImage(data: data), let image = uiImg.CGImage {
+                                    delegate.appendImg_Cache(picUrlString, value: image, checkData: weiboData)
+                                    dispatch_async(saveImageQueue, { () -> Void in
+                                        let saveName = picUrlString.md5
+                                        let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                        delegate.appendPic_Cache(picUrlString, value: savePath)
+                                        data.writeToFile(savePath, atomically: true)
+                                    })
+                                }
+                            }
+                        })
+                        task.resume()
                     }
-                })
-                task.resume()
+                }
             }
-            
         }
+        
+        
+        
     }
     
     class func getWeiboDataFromUrl(stringUrl: String, completed:(JSON) -> Void) {
