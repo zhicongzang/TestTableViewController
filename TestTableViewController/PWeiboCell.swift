@@ -50,17 +50,17 @@ class PWeiboCell: UITableViewCell {
     
     override func drawRect(rect: CGRect) {
         if let weiboData = self.weiboData, let delegate = self.delegate{
-         /*   if let fullImg = delegate.getFullImageByKey(weiboData.id) {
+            if let fullImg = delegate.getFullImageByKey(weiboData.id) {
                 let context = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1, -1)
-                CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
+                CGContextDrawImage(context, CGRect(x:0, y:0, width:SupportFunction.getScreenWidth(),height: -weiboData.getHeight()), fullImg)
                 print("\(row!): from Cache")
             }else if let fullImg = SupportFunction.createImageWithWeiboData(weiboData, delegate: delegate) {
                 let context = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1, -1)
-                CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
+                CGContextDrawImage(context, CGRect(x:0, y:0, width:SupportFunction.getScreenWidth(),height: -weiboData.getHeight()), fullImg)
                 print("\(row!): create full Pic")
-            }else {*/
+            }else {
                 let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                 NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
                 let textHeight = weiboData.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
@@ -85,10 +85,10 @@ class PWeiboCell: UITableViewCell {
                     }else if let pic = UIImage(named: "2.jpg")?.CGImage {
                         CGContextDrawImage(context, CGRect(x: 66, y: -(66 + textHeight + 8), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
                     }
-                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8 + 150 + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
+                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8 + 150 + 8), width: SupportFunction.getScreenWidth(), height: -38), lineImage.CGImage)
                     
                 }else {
-                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
+                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8), width: SupportFunction.getScreenWidth(), height: -38), lineImage.CGImage)
                 }
                 
                 print("\(row!): Draw!")
@@ -99,7 +99,7 @@ class PWeiboCell: UITableViewCell {
             
             
             
-     //   }
+        }
         
     }
     

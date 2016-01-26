@@ -13,7 +13,8 @@ let pic_cache_directory = "/Documents/Pic_Cache"
 let pic_cache_fileName = "/pic_Cache.plist"
 let getDataURL = "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC"
 let lineImage = UIImage(named: "line.png")!
-let fontName = "HelveticaNeue-UltraLight"
+//let fontName = "HelveticaNeue-UltraLight"
+let fontName = "STHeitiTC-Light"
 let fontSize:CGFloat = 17
 
 
@@ -52,7 +53,7 @@ class SupportFunction {
         let height = data.getHeight()
         if data.smallPicUrl == "" {
             if let userPic = delegate.getImageByKey(data.user.profileImgUrl) {
-                UIGraphicsBeginImageContext(CGSizeMake(getScreenWidth(), height))
+                UIGraphicsBeginImageContextWithOptions(CGSizeMake(getScreenWidth(), height), false, 0.0)
                 let context = UIGraphicsGetCurrentContext()
                 let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                     NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
@@ -60,7 +61,7 @@ class SupportFunction {
                 data.text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: height - 112))
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
-                CGContextDrawImage(context, CGRect(x: 0, y: -(height - lineImage.size.height), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
+                CGContextDrawImage(context, CGRect(x: 0, y: -(height - 38), width: getScreenWidth(), height: -38), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 dispatch_async(saveImageQueue, { () -> Void in
@@ -73,9 +74,9 @@ class SupportFunction {
                 })
                 return new.CGImage
             }
-        }else {
+        } else {
             if let userPic = delegate.getImageByKey(data.user.profileImgUrl), let pic = delegate.getImageByKey(data.smallPicUrl) {
-                UIGraphicsBeginImageContext(CGSizeMake(getScreenWidth(), height))
+                UIGraphicsBeginImageContextWithOptions(CGSizeMake(getScreenWidth(), height), false, 0.0)
                 let context = UIGraphicsGetCurrentContext()
                 let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                     NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
@@ -84,7 +85,7 @@ class SupportFunction {
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
                 CGContextDrawImage(context, CGRect(x: 66, y: -(66 + height - 112 - 150), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
-                CGContextDrawImage(context, CGRect(x: 0, y: -(height - lineImage.size.height), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
+                CGContextDrawImage(context, CGRect(x: 0, y: -(height - 38), width: getScreenWidth(), height: -38), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 dispatch_async(saveImageQueue, { () -> Void in
@@ -102,9 +103,9 @@ class SupportFunction {
         return nil
     }
     //Create Line.png
-  /*
+  
     class func createImg(){
-        UIGraphicsBeginImageContext(CGSizeMake(getScreenWidth(), 28 + 10))
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(getScreenWidth(), 28 + 10),false, 0.0)
         let context = UIGraphicsGetCurrentContext()
         CGContextScaleCTM(context, 1, -1)
         UIColor(white: 0.66, alpha: 1).set()
@@ -129,6 +130,6 @@ class SupportFunction {
         let new = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         UIImagePNGRepresentation(new)?.writeToFile(NSHomeDirectory()  + "111.png", atomically: true)
-    }*/
+    }
     
 }

@@ -49,7 +49,7 @@ extension String {
     
     func heightLightString(options: [StringSearchingOptions]) -> NSAttributedString {
         let attrSting = NSMutableAttributedString(string: self)
-        attrSting.addAttribute(NSFontAttributeName, value: UIFont(name: "HelveticaNeue-UltraLight", size: 17)!, range: NSMakeRange(0,self.characters.count))
+        attrSting.addAttribute(NSFontAttributeName, value: UIFont(name: fontName, size: fontSize)!, range: NSMakeRange(0,self.characters.count))
         for option in options {
             if let regex = try? NSRegularExpression(pattern: option.rawValue, options: NSRegularExpressionOptions.CaseInsensitive) {
                 let matches = regex.matchesInString(self, options: NSMatchingOptions(rawValue: 0), range: NSMakeRange(0,self.characters.count))

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0793F6989A06CFB1A57F41B8 /* Pods_TestTableViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D53D7D60E27F5B19CD7209B /* Pods_TestTableViewController.framework */; };
-		325206891C571CDD00852771 /* Line.png in Resources */ = {isa = PBXBuildFile; fileRef = 325206881C571CDD00852771 /* Line.png */; };
 		327C98B31C1CE20F0052C809 /* SupportFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C98B21C1CE20F0052C809 /* SupportFunction.swift */; };
 		DC00F9041C3DC21E00B7BAF1 /* FPSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC00F9031C3DC21E00B7BAF1 /* FPSLabel.swift */; };
 		DC3946071C3C3D7200AF0450 /* WeiboAccounts.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3945D81C3C3D7200AF0450 /* WeiboAccounts.m */; };
@@ -48,6 +47,7 @@
 		DCAB45BB1C22168500CF68E0 /* PWeiboCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB45B91C22168500CF68E0 /* PWeiboCell.swift */; };
 		DCAB45BC1C22168500CF68E0 /* PWeiboCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45BA1C22168500CF68E0 /* PWeiboCell.xib */; };
 		DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DCAB45F71C22261700CF68E0 /* 1.jpg */; };
+		DCE857311C58259C009F6E18 /* Line.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE857301C58259C009F6E18 /* Line.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +69,6 @@
 
 /* Begin PBXFileReference section */
 		2D53D7D60E27F5B19CD7209B /* Pods_TestTableViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestTableViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		325206881C571CDD00852771 /* Line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Line.png; sourceTree = "<group>"; };
 		327C98B21C1CE20F0052C809 /* SupportFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportFunction.swift; sourceTree = "<group>"; };
 		A56340F7BFAB84A58F545567 /* Pods-TestTableViewController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestTableViewController.release.xcconfig"; path = "Pods/Target Support Files/Pods-TestTableViewController/Pods-TestTableViewController.release.xcconfig"; sourceTree = "<group>"; };
 		B07CB72EFE92A150A2B77333 /* Pods-TestTableViewController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestTableViewController.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestTableViewController/Pods-TestTableViewController.debug.xcconfig"; sourceTree = "<group>"; };
@@ -142,6 +141,7 @@
 		DCAB45B91C22168500CF68E0 /* PWeiboCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PWeiboCell.swift; sourceTree = "<group>"; };
 		DCAB45BA1C22168500CF68E0 /* PWeiboCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PWeiboCell.xib; sourceTree = "<group>"; };
 		DCAB45F71C22261700CF68E0 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
+		DCE857301C58259C009F6E18 /* Line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Line.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,7 +276,7 @@
 				DC3945D51C3C3D7200AF0450 /* WeiboSDK */,
 				DCAB45F71C22261700CF68E0 /* 1.jpg */,
 				DC9331271C56B24A00BCFB3C /* 2.jpg */,
-				325206881C571CDD00852771 /* Line.png */,
+				DCE857301C58259C009F6E18 /* Line.png */,
 				DCAB455D1C1A226F00CF68E0 /* TestTableViewController */,
 				DCAB45721C1A226F00CF68E0 /* TestTableViewControllerTests */,
 				DCAB457D1C1A226F00CF68E0 /* TestTableViewControllerUITests */,
@@ -485,7 +485,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				325206891C571CDD00852771 /* Line.png in Resources */,
+				DCE857311C58259C009F6E18 /* Line.png in Resources */,
 				DC3946131C3C3D7200AF0450 /* WeiboDialogClose@2x.png in Resources */,
 				DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */,
 				DCAB45691C1A226F00CF68E0 /* LaunchScreen.storyboard in Resources */,
