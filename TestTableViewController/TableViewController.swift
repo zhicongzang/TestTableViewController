@@ -192,14 +192,14 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     
     func appendImg_Cache(key: String, value: CGImage, checkData:WeiboData) {
         self.img_Cache[key] = value
-        dispatch_async(createNewImageQueue, { () -> Void in
+      /*  dispatch_async(createNewImageQueue, { () -> Void in
             if let newImage = SupportFunction.createImageWithWeiboData(checkData, delegate: self) {
                 self.writePic_CacheToLocal()
                 self.fullImg_Cache[checkData.id] = newImage
                 self.img_Cache.removeValueForKey(checkData.user.profileImgUrl)
                 self.img_Cache.removeValueForKey(checkData.smallPicUrl)
             }
-        })
+        })*/
     }
         
     func getImageByKey(key: String) -> CGImage? {

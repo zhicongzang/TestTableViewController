@@ -51,7 +51,7 @@ class PWeiboCell: UITableViewCell {
     
     override func drawRect(rect: CGRect) {
         if let weiboData = self.weiboData, let delegate = self.delegate{
-            if let fullImg = delegate.getFullImageByKey(weiboData.id) {
+         /*   if let fullImg = delegate.getFullImageByKey(weiboData.id) {
                 let context = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
@@ -61,7 +61,7 @@ class PWeiboCell: UITableViewCell {
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
                 print("\(row!): create full Pic")
-            }else {
+            }else {*/
                 let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                 NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
                 let textHeight = weiboData.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
@@ -71,6 +71,7 @@ class PWeiboCell: UITableViewCell {
                 text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: textHeight))
                 
                 let context = UIGraphicsGetCurrentContext()
+                
                 CGContextScaleCTM(context, 1, -1)
                 let userPicUrl = weiboData.user.profileImgUrl
                 if let userPic = delegate.getImageByKey(userPicUrl) {
@@ -91,15 +92,15 @@ class PWeiboCell: UITableViewCell {
                     CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                 }
                 
-                print("\(row!): Fuck!")
-               // NetworkRequest.downloadPicsFromWeiboData(weiboData, delegate: delegate)
+                print("\(row!): Draw!")
+                setNeedsDisplay()
                 
                 
             }
             
             
             
-        }
+     //   }
         
     }
     
