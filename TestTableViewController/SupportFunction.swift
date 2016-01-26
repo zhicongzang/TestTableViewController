@@ -13,6 +13,10 @@ let pic_cache_directory = "/Documents/Pic_Cache"
 let pic_cache_fileName = "/pic_Cache.plist"
 let getDataURL = "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC"
 let lineImage = UIImage(named: "line.png")!
+let fontName = "HelveticaNeue-UltraLight"
+let fontSize:CGFloat = 17
+
+
 
 
 class SupportFunction {
@@ -20,7 +24,7 @@ class SupportFunction {
         return UIScreen.mainScreen().bounds.width
     }
     
-    class func checkPicCacheDirectory() -> [String:String]{
+    class func checkPicCacheDirectory() -> [Int:String]{
         let localPath = NSHomeDirectory() + pic_cache_directory
         print(localPath)
         if !NSFileManager.defaultManager().fileExistsAtPath(localPath) {
@@ -34,48 +38,63 @@ class SupportFunction {
             let cachePath = localPath + pic_cache_fileName
             if NSFileManager.defaultManager().fileExistsAtPath(cachePath) {
                 let cache = NSDictionary(contentsOfFile: cachePath)
-                return cache as! [String:String]
+                return cache as! [Int:String]
             }
         }
         return [:]
     }
     
-    class func cellHeightByData(data:WeiboData) -> CGFloat{
-        return 8 + 50 + 8 + data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() - 55 * 2) + 8 + 28 + 10
+    class func cellHeightByData(text:String) -> CGFloat{
+        return 8 + 50 + 8 + text.stringHeightWith(17, width: SupportFunction.getScreenWidth() - 55 * 2) + 8 + 28 + 10
     }
     
     class func createImageWithWeiboData(data:WeiboData, delegate: pic_CacheDegelate) -> CGImage? {
+        let height = data.getHeight()
         if data.smallPicUrl == "" {
-            if let userPic = delegate.getImageByKey(data.user.profileImgUrl), let height = delegate.getCellHeightByID(data.id) {
+            if let userPic = delegate.getImageByKey(data.user.profileImgUrl) {
                 UIGraphicsBeginImageContext(CGSizeMake(getScreenWidth(), height))
                 let context = UIGraphicsGetCurrentContext()
-                let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
+                let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                     NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
                 data.user.name.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
-                data.text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)))
+                data.text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: height - 112))
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
                 CGContextDrawImage(context, CGRect(x: 0, y: -(height - lineImage.size.height), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
-                print("\(data.user.name): Full Image Created")
+                dispatch_async(saveImageQueue, { () -> Void in
+                    if let imgDate = UIImagePNGRepresentation(new) {
+                        let savePath = NSHomeDirectory() + pic_cache_directory + "/\(data.id).png"
+                        imgDate.writeToFile(savePath, atomically: true)
+                        delegate.appendPic_Cache(data.id, value: savePath)
+                        
+                    }
+                })
                 return new.CGImage
             }
         }else {
-            if let userPic = delegate.getImageByKey(data.user.profileImgUrl), let pic = delegate.getImageByKey(data.smallPicUrl), let height = delegate.getCellHeightByID(data.id) {
+            if let userPic = delegate.getImageByKey(data.user.profileImgUrl), let pic = delegate.getImageByKey(data.smallPicUrl) {
                 UIGraphicsBeginImageContext(CGSizeMake(getScreenWidth(), height))
                 let context = UIGraphicsGetCurrentContext()
-                let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
+                let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
                     NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
                 data.user.name.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
-                data.text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)))
+                data.text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: height - 112 - 150 - 8))
                 CGContextScaleCTM(context, 1, -1)
                 CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
-                CGContextDrawImage(context, CGRect(x: 66, y: -(66 + data.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
+                CGContextDrawImage(context, CGRect(x: 66, y: -(66 + height - 112 - 150), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
                 CGContextDrawImage(context, CGRect(x: 0, y: -(height - lineImage.size.height), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
-                print("\(data.user.name): Full Image Created")
+                dispatch_async(saveImageQueue, { () -> Void in
+                    if let imgDate = UIImagePNGRepresentation(new) {
+                        let savePath = NSHomeDirectory() + pic_cache_directory + "/\(data.id).png"
+                        imgDate.writeToFile(savePath, atomically: true)
+                        delegate.appendPic_Cache(data.id, value: savePath)
+                        
+                    }
+                })
                 return new.CGImage
             }
 

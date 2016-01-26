@@ -13,12 +13,10 @@ import Alamofire
 
 class PWeiboCell: UITableViewCell {
     
-    var id: Int?
-    var userName: String?
-    var context: String?
+    var weiboData: WeiboData?
     var delegate: pic_CacheDegelate?
-    var userPicUrl: String?
-    var smallPicUrl: String?
+    var row: Int?
+    
     
     
     
@@ -33,6 +31,8 @@ class PWeiboCell: UITableViewCell {
         
     }
     
+
+    
     
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -42,40 +42,44 @@ class PWeiboCell: UITableViewCell {
         
         
     }
+    func getData(weiboData:WeiboData, delegate:pic_CacheDegelate) {
+        self.weiboData = weiboData
+        self.delegate = delegate
+    }
     
     
     
     override func drawRect(rect: CGRect) {
-        
-        if let id = self.id, let fullImg = delegate?.getFullImageByKey(id) {
-            let context = UIGraphicsGetCurrentContext()
-            CGContextScaleCTM(context, 1, -1)
-            CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
-            print("\(userName!): use full img")
-        }else {
-            let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
-                NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
-            let textHeight = self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
-            if let userName = self.userName {
-                userName.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
-            }
-            if let text = self.context {
-                text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: textHeight))
-            }
-            
-            
-            if let delegate = self.delegate {
+        if let weiboData = self.weiboData, let delegate = self.delegate{
+            if let fullImg = delegate.getFullImageByKey(weiboData.id) {
                 let context = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1, -1)
-                if let userPicUrl = self.userPicUrl {
-                    if let userPic = delegate.getImageByKey(userPicUrl) {
-                        CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
-                    }else if let userPic = UIImage(named: "1.jpg")?.circleImage().CGImage {
-                        CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50),userPic)
-                    }
-                }
+                CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
+                print("\(row!): from Cache")
+            }else if let fullImg = SupportFunction.createImageWithWeiboData(weiboData, delegate: delegate) {
+                let context = UIGraphicsGetCurrentContext()
+                CGContextScaleCTM(context, 1, -1)
+                CGContextDrawImage(context, CGRect(x:0, y:0, width:CGFloat(CGImageGetWidth(fullImg)),height: -CGFloat(CGImageGetHeight(fullImg))), fullImg)
+                print("\(row!): create full Pic")
+            }else {
+                let  attributes = [NSFontAttributeName:UIFont(name: fontName, size: fontSize)!,
+                NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
+                let textHeight = weiboData.text.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
+                let userName = weiboData.user.name
+                userName.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
+                let text = weiboData.text
+                text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: textHeight))
                 
-                if let smallPicUrl = self.smallPicUrl where smallPicUrl != "" {
+                let context = UIGraphicsGetCurrentContext()
+                CGContextScaleCTM(context, 1, -1)
+                let userPicUrl = weiboData.user.profileImgUrl
+                if let userPic = delegate.getImageByKey(userPicUrl) {
+                    CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50), userPic)
+                }else if let userPic = UIImage(named: "1.jpg")?.circleImage().CGImage {
+                    CGContextDrawImage(context, CGRect(x: 8, y: -8, width: 50, height: -50),userPic)
+                }
+                let smallPicUrl = weiboData.smallPicUrl
+                if smallPicUrl != "" {
                     if let pic = delegate.getImageByKey(smallPicUrl) {
                         CGContextDrawImage(context, CGRect(x: 66, y: -(66 + textHeight + 8), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
                     }else if let pic = UIImage(named: "2.jpg")?.CGImage {
@@ -87,39 +91,19 @@ class PWeiboCell: UITableViewCell {
                     CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                 }
                 
+                print("\(row!): Fuck!")
+               // NetworkRequest.downloadPicsFromWeiboData(weiboData, delegate: delegate)
+                
+                
             }
-            /*
-            UIColor(white: 0.66, alpha: 1).set()
-            CGContextSetLineWidth(context, 0.4)
-            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8 + 0.4/2))
-            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8))
-            CGContextStrokePath(context)
-            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8  - 0.4/2 + 28))
-            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8  - 0.4/2 + 28))
-            CGContextStrokePath(context)
-            CGContextMoveToPoint(context, SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8 + 0.4/2))
-            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8  - 0.4/2 + 28))
-            CGContextStrokePath(context)
-            CGContextMoveToPoint(context, 2 * SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8 + 0.4/2))
-            CGContextAddLineToPoint(context, 2 * SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8  - 0.4/2 + 28))
-            CGContextStrokePath(context)
-            UIColor(white: 0.66, alpha: 0.3).set()
-            CGContextSetLineWidth(context, 10)
-            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8 + 28 + 10/2))
-            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8 + 28 + 10/2))
-            CGContextStrokePath(context)
-            */
+            
+            
+            
         }
         
     }
     
     
-    
-    func clearSubLayers(){
-        if self.layer.sublayers?.count > 2 {
-            self.layer.sublayers = [self.layer.sublayers![0],self.layer.sublayers![1]]
-        }
-    }
     
     
 }

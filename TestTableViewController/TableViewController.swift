@@ -15,17 +15,17 @@ let saveImageQueue = dispatch_queue_create("saveImage", DISPATCH_QUEUE_CONCURREN
 let writeToLocalQueue = dispatch_queue_create("writeToLocal", DISPATCH_QUEUE_SERIAL)
 let createNewImageQueue = dispatch_queue_create("createNewImage", DISPATCH_QUEUE_CONCURRENT)
 let downloadPicQueue = dispatch_queue_create("downloadPic", DISPATCH_QUEUE_CONCURRENT)
+let requestDownloadPicQueue = dispatch_queue_create("requestDownloadPic", DISPATCH_QUEUE_CONCURRENT)
 
 
 class TableViewController: UITableViewController, pic_CacheDegelate {
     
-    var pic_Cache:[String:String] = SupportFunction.checkPicCacheDirectory()
+    var pic_Cache:[Int:String] = SupportFunction.checkPicCacheDirectory()
     var img_Cache = [String:CGImage]()
     var fullImg_Cache = [Int:CGImage]()
     
     var weibos: [WeiboData] = []
     
-    var cellHeightCache:[Int:CGFloat] = [:]
     //var token = ""
     
     var needLoadArr = [NSIndexPath]()
@@ -98,7 +98,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.row == weibos.count - 10 {
+        if indexPath.row == weibos.count - 15 {
             loadData()
         }
         
@@ -110,16 +110,10 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         if needLoadArr.count > 0 && needLoadArr.indexOf(indexPath) == nil{
             return self.cell
         }
-        // let cell = tableView.dequeueReusableCellWithIdentifier("Weibo", forIndexPath: indexPath) as! WeiboCell
-        // cell.setWeiboData(weibos[indexPath.row], pic_Cache: pic_Cache, delegate: self)
         
         let cell = tableView.dequeueReusableCellWithIdentifier("P", forIndexPath: indexPath) as! PWeiboCell
-        cell.id = data.id
-        cell.context = data.text
-        cell.userName = data.user.name
-        cell.delegate = self
-        cell.userPicUrl = data.user.profileImgUrl
-        cell.smallPicUrl = data.smallPicUrl
+        cell.getData(data, delegate: self)
+        cell.row = indexPath.row
         
         
         return cell
@@ -130,22 +124,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let data = weibos[indexPath.row]
-        if let height = cellHeightCache[data.id] {
-            return height
-        }else {
-            if data.smallPicUrl != "" {
-                let height = SupportFunction.cellHeightByData(data) + 150 + 8
-                cellHeightCache[data.id] = height
-                return height
-            }else {
-                let height = SupportFunction.cellHeightByData(data)
-                cellHeightCache[data.id] = height
-                return height
-            }
-        }
-        
-        
-        
+        return data.getHeight()
     }
     
     
@@ -154,7 +133,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         if let iP = self.tableView.indexPathForRowAtPoint(CGPointMake(0, targetContentOffset.memory.y)) {
             let cIP = (self.tableView.indexPathsForVisibleRows?.first)!
             let skipCount = 8
-            if labs((cIP.row) - (iP.row)) > skipCount && velocity.y > 0{
+            if labs((cIP.row) - (iP.row)) > skipCount {
                 self.needLoadArr.removeAll()
                 let temp = self.tableView.indexPathsForRowsInRect(CGRectMake(0, targetContentOffset.memory.y, self.tableView.frame.width, self.tableView.frame.height))!
                 let indexPath = temp.last
@@ -184,10 +163,10 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
                 for(_,subJson):(String,JSON) in json["statuses"]{
                     let weibo = WeiboData(data: subJson)
                     self.weibos.append(weibo)
-                    self.calculateCellHeight(weibo)
-                    NetworkRequest.downloadPicsFromUrl(weibo, delegate: self)
+                    dispatch_async(requestDownloadPicQueue, { () -> Void in
+                        NetworkRequest.downloadPicsFromWeiboData(weibo, delegate: self)
+                    })
                 }
-                self.writePic_CacheToLocal()
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.tableView.reloadData()
                 })
@@ -197,21 +176,6 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     }
     
    
-    func calculateCellHeight(data:WeiboData){
-        dispatch_async(cellHeightQueue) { () -> Void in
-            if self.cellHeightCache[data.id] == nil {
-                if data.smallPicUrl != "" {
-                    let height = SupportFunction.cellHeightByData(data) + 150 + 8
-                    self.cellHeightCache[data.id] = height
-                    self.totalCellHeight = self.totalCellHeight + height
-                }else {
-                    let height = SupportFunction.cellHeightByData(data)
-                    self.cellHeightCache[data.id] = height
-                    self.totalCellHeight = self.totalCellHeight + height
-                }
-            }
-        }
-    }
     
     func writePic_CacheToLocal() {
         dispatch_async(writeToLocalQueue) { () -> Void in
@@ -222,7 +186,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
     }
     
     
-    func appendPic_Cache(key: String, value: String) {
+    func appendPic_Cache(key: Int, value: String) {
         self.pic_Cache[key] = value
     }
     
@@ -230,16 +194,19 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         self.img_Cache[key] = value
         dispatch_async(createNewImageQueue, { () -> Void in
             if let newImage = SupportFunction.createImageWithWeiboData(checkData, delegate: self) {
+                self.writePic_CacheToLocal()
                 self.fullImg_Cache[checkData.id] = newImage
+                self.img_Cache.removeValueForKey(checkData.user.profileImgUrl)
+                self.img_Cache.removeValueForKey(checkData.smallPicUrl)
             }
         })
     }
-    
+        
     func getImageByKey(key: String) -> CGImage? {
         return img_Cache[key]
     }
     
-    func getPathByKey(key: String) -> String? {
+    func getPathByKey(key: Int) -> String? {
         return pic_Cache[key]
     }
     
@@ -247,9 +214,10 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         return fullImg_Cache[key]
     }
     
-    func getCellHeightByID(id: Int) -> CGFloat?{
-        return cellHeightCache[id]
+    func appendFullImg_Cache(key: Int, value: CGImage) {
+        fullImg_Cache[key] = value
     }
+    
     
     
     

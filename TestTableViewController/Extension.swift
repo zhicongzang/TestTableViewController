@@ -18,7 +18,7 @@ enum StringSearchingOptions: String {
 extension String {
     
     func stringHeightWith(fontSize:CGFloat,width:CGFloat) -> CGFloat {
-        let font = UIFont(name: "HelveticaNeue-UltraLight", size: 17)!
+        let font = UIFont(name: fontName, size: fontSize)!
         let size = CGSizeMake(width,CGFloat.max)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .ByWordWrapping;
