@@ -194,7 +194,7 @@ class TableViewController: UITableViewController, pic_CacheDegelate {
         self.img_Cache[key] = value
         dispatch_async(createNewImageQueue, { () -> Void in
             if let newImage = SupportFunction.createImageWithWeiboData(checkData, delegate: self) {
-                self.writePic_CacheToLocal()
+            //    self.writePic_CacheToLocal()
                 self.fullImg_Cache[checkData.id] = newImage
                 self.img_Cache.removeValueForKey(checkData.user.profileImgUrl)
                 self.img_Cache.removeValueForKey(checkData.smallPicUrl)

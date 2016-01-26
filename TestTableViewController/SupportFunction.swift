@@ -12,7 +12,7 @@ import UIKit
 let pic_cache_directory = "/Documents/Pic_Cache"
 let pic_cache_fileName = "/pic_Cache.plist"
 let getDataURL = "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC"
-let lineImage = UIImage(named: "line.png")!
+let lineImage = UIImage(named: "Line.png")!
 //let fontName = "HelveticaNeue-UltraLight"
 let fontName = "STHeitiTC-Light"
 let fontSize:CGFloat = 17
@@ -64,14 +64,14 @@ class SupportFunction {
                 CGContextDrawImage(context, CGRect(x: 0, y: -(height - 38), width: getScreenWidth(), height: -38), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
-                dispatch_async(saveImageQueue, { () -> Void in
+             /*   dispatch_async(saveImageQueue, { () -> Void in
                     if let imgDate = UIImagePNGRepresentation(new) {
                         let savePath = NSHomeDirectory() + pic_cache_directory + "/\(data.id).png"
                         imgDate.writeToFile(savePath, atomically: true)
                         delegate.appendPic_Cache(data.id, value: savePath)
                         
                     }
-                })
+                })*/
                 return new.CGImage
             }
         } else {
@@ -88,14 +88,14 @@ class SupportFunction {
                 CGContextDrawImage(context, CGRect(x: 0, y: -(height - 38), width: getScreenWidth(), height: -38), lineImage.CGImage)
                 let new = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
-                dispatch_async(saveImageQueue, { () -> Void in
+           /*     dispatch_async(saveImageQueue, { () -> Void in
                     if let imgDate = UIImagePNGRepresentation(new) {
                         let savePath = NSHomeDirectory() + pic_cache_directory + "/\(data.id).png"
                         imgDate.writeToFile(savePath, atomically: true)
                         delegate.appendPic_Cache(data.id, value: savePath)
                         
                     }
-                })
+                }) */
                 return new.CGImage
             }
 
