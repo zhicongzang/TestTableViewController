@@ -14,8 +14,8 @@ let pic_cache_fileName = "/pic_Cache.plist"
 let getDataURL = "https://api.weibo.com/2/statuses/public_timeline.json?access_token=2.00kK7JSG0IVHcF73dc2cde89OU4MQC"
 let lineImage = UIImage(named: "Line.png")!
 //let fontName = "HelveticaNeue-UltraLight"
-let fontName = "STHeitiTC-Light"
-let fontSize:CGFloat = 17
+let fontName = "HelveticaNeue"
+let fontSize:CGFloat = 15
 
 
 
