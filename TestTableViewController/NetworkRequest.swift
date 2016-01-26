@@ -38,7 +38,7 @@ class NetworkRequest {
                                 delegate.appendImg_Cache(userPicUrlString, value: image, checkData: weiboData)
                                 dispatch_async(saveImageQueue, { () -> Void in
                                     let saveName = userPicUrlString.md5
-                                    let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                    let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).png"
                                     delegate.appendPic_Cache(userPicUrlString, value: savePath)
                                     data.writeToFile(savePath, atomically: true)
                                 })
@@ -63,7 +63,7 @@ class NetworkRequest {
                                     delegate.appendImg_Cache(picUrlString, value: image, checkData: weiboData)
                                     dispatch_async(saveImageQueue, { () -> Void in
                                         let saveName = picUrlString.md5
-                                        let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).jpg"
+                                        let savePath = NSHomeDirectory() + pic_cache_directory + "/\(saveName).png"
                                         delegate.appendPic_Cache(picUrlString, value: savePath)
                                         data.writeToFile(savePath, atomically: true)
                                     })

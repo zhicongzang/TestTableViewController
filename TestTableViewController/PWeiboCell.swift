@@ -55,12 +55,15 @@ class PWeiboCell: UITableViewCell {
         }else {
             let  attributes = [NSFontAttributeName:UIFont(name: "HelveticaNeue-UltraLight", size: 17)!,
                 NSParagraphStyleAttributeName:NSMutableParagraphStyle().copy()]
+            let textHeight = self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)
             if let userName = self.userName {
                 userName.drawInRect(CGRect(x: 66 , y: 8, width: SupportFunction.getScreenWidth() - 66 - 8, height: 25), withAttributes: attributes)
             }
-            if let context = self.context {
-                context.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: context.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110)))
+            if let text = self.context {
+                text.heightLightString([StringSearchingOptions.WeiboURL,StringSearchingOptions.WeiboUserName,StringSearchingOptions.WeiboHot]).drawInRect(CGRect(x: 66 , y: 66, width: SupportFunction.getScreenWidth() - 110, height: textHeight))
             }
+            
+            
             if let delegate = self.delegate {
                 let context = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1, -1)
@@ -74,13 +77,38 @@ class PWeiboCell: UITableViewCell {
                 
                 if let smallPicUrl = self.smallPicUrl where smallPicUrl != "" {
                     if let pic = delegate.getImageByKey(smallPicUrl) {
-                        CGContextDrawImage(context, CGRect(x: 66, y: -(66 + self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
+                        CGContextDrawImage(context, CGRect(x: 66, y: -(66 + textHeight + 8), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
                     }else if let pic = UIImage(named: "2.jpg")?.CGImage {
-                        CGContextDrawImage(context, CGRect(x: 66, y: -(66 + self.context!.stringHeightWith(17, width: SupportFunction.getScreenWidth() -  110) + 8 ), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
+                        CGContextDrawImage(context, CGRect(x: 66, y: -(66 + textHeight + 8), width: 150 * CGFloat(CGImageGetWidth(pic)) / CGFloat(CGImageGetHeight(pic)), height: -150), pic)
                     }
+                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8 + 150 + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                     
+                }else {
+                    CGContextDrawImage(context, CGRect(x: 0, y: -(66 + textHeight + 8), width: lineImage.size.width, height: -lineImage.size.height), lineImage.CGImage)
                 }
+                
             }
+            /*
+            UIColor(white: 0.66, alpha: 1).set()
+            CGContextSetLineWidth(context, 0.4)
+            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8 + 0.4/2))
+            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8))
+            CGContextStrokePath(context)
+            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8  - 0.4/2 + 28))
+            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8  - 0.4/2 + 28))
+            CGContextStrokePath(context)
+            CGContextMoveToPoint(context, SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8 + 0.4/2))
+            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8  - 0.4/2 + 28))
+            CGContextStrokePath(context)
+            CGContextMoveToPoint(context, 2 * SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8 + 0.4/2))
+            CGContextAddLineToPoint(context, 2 * SupportFunction.getScreenWidth()/3, -(66 + textHeight + 8  - 0.4/2 + 28))
+            CGContextStrokePath(context)
+            UIColor(white: 0.66, alpha: 0.3).set()
+            CGContextSetLineWidth(context, 10)
+            CGContextMoveToPoint(context, 0, -(66 + textHeight + 8 + 28 + 10/2))
+            CGContextAddLineToPoint(context, SupportFunction.getScreenWidth(), -(66 + textHeight + 8 + 28 + 10/2))
+            CGContextStrokePath(context)
+            */
         }
         
     }

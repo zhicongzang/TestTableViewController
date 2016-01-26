@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		325206891C571CDD00852771 /* Line.png in Resources */ = {isa = PBXBuildFile; fileRef = 325206881C571CDD00852771 /* Line.png */; settings = {ASSET_TAGS = (); }; };
 		327C98B31C1CE20F0052C809 /* SupportFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C98B21C1CE20F0052C809 /* SupportFunction.swift */; settings = {ASSET_TAGS = (); }; };
 		906C9482A9386417EF0DC4D3 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67AB795E57E5997B6DA8CCD /* Pods.framework */; };
 		DC00F9041C3DC21E00B7BAF1 /* FPSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC00F9031C3DC21E00B7BAF1 /* FPSLabel.swift */; settings = {ASSET_TAGS = (); }; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		060104D8315A0CE450D4588E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		325206881C571CDD00852771 /* Line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Line.png; sourceTree = "<group>"; };
 		327C98B21C1CE20F0052C809 /* SupportFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportFunction.swift; sourceTree = "<group>"; };
 		C67AB795E57E5997B6DA8CCD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC00F9031C3DC21E00B7BAF1 /* FPSLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FPSLabel.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				DC3945D51C3C3D7200AF0450 /* WeiboSDK */,
 				DCAB45F71C22261700CF68E0 /* 1.jpg */,
 				DC9331271C56B24A00BCFB3C /* 2.jpg */,
+				325206881C571CDD00852771 /* Line.png */,
 				DCAB455D1C1A226F00CF68E0 /* TestTableViewController */,
 				DCAB45721C1A226F00CF68E0 /* TestTableViewControllerTests */,
 				DCAB457D1C1A226F00CF68E0 /* TestTableViewControllerUITests */,
@@ -480,6 +483,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				325206891C571CDD00852771 /* Line.png in Resources */,
 				DC3946131C3C3D7200AF0450 /* WeiboDialogClose@2x.png in Resources */,
 				DCAB45F81C22261700CF68E0 /* 1.jpg in Resources */,
 				DCAB45691C1A226F00CF68E0 /* LaunchScreen.storyboard in Resources */,
